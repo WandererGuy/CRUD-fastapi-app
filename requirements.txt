@@ -1,0 +1,22 @@
+# Web Framework
+fastapi==0.115.5
+uvicorn[standard]==0.34.0
+
+# Database
+sqlalchemy==2.0.36
+asyncpg==0.30.0
+psycopg2-binary==2.9.10
+alembic==1.14.0
+
+# Data Validation
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# LangChain
+langchain-community==0.3.12
+
+# Logging
+loguru==0.7.3
+
+# Python Version Requirement
+# Python >= 3.10 required
