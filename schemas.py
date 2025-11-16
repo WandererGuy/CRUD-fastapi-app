@@ -60,3 +60,40 @@ class ListBrandParams(BaseModel):
 class ListBrandsResponse(BaseModel):
     total: int = Field(..., description="Total number of brands")
     data: list[BrandResponse] = Field(..., description="List of brands")
+
+
+# ==================== User Authentication Schemas ====================
+
+class UserCreate(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50, description="Username")
+    email: str = Field(..., description="Email address")
+    password: str = Field(..., min_length=8, description="Password (min 8 characters)")
+
+
+class UserResponse(BaseModel):
+    id: uuid.UUID = Field(..., description="User ID")
+    username: str = Field(..., description="Username")
+    email: str = Field(..., description="Email address")
+    is_active: bool = Field(..., description="User active status")
+    created_at: datetime = Field(..., description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
+
+
+class LoginRequest(BaseModel):
+    username: str = Field(..., description="Username or email")
+    password: str = Field(..., description="Password")
+
+
+class TokenResponse(BaseModel):
+    access_token: str = Field(..., description="JWT access token")
+    refresh_token: str = Field(..., description="JWT refresh token")
+    token_type: str = Field(default="bearer", description="Token type")
+
+
+class TokenData(BaseModel):
+    username: str | None = None
+    user_id: uuid.UUID | None = None
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str = Field(..., description="Refresh token")

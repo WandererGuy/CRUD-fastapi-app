@@ -6,6 +6,8 @@ from exception import ValidationException, ServiceException, IntegrityError, to_
 from typing import Annotated
 from schemas import CreateBrandRequest, BrandResponse, UpdateBrandRequest
 from service import BrandService
+from security import get_current_active_user
+from models import User
 # ---------- Initialize ----------
 app = FastAPI(title="Brand CRUD API (Class-Based)")
 
@@ -21,6 +23,7 @@ def get_brand_service() -> BrandService:
 from sqlalchemy.ext.asyncio import AsyncSession
 BrandServiceDep = Annotated[BrandService, Depends(get_brand_service)]
 DatabaseDep = Annotated[AsyncSession, Depends(get_async_db)]
+CurrentUser = Annotated[User, Depends(get_current_active_user)]
 
 
 router = APIRouter(
@@ -47,7 +50,8 @@ router = APIRouter(
 async def create_brand(
     request: CreateBrandRequest,
     brand_service: BrandServiceDep,
-    db: DatabaseDep
+    db: DatabaseDep,
+    current_user: CurrentUser
     ) -> BrandResponse:
     """
     Create a new brand.
@@ -96,6 +100,7 @@ from schemas import ListBrandParams, ListBrandsResponse
 async def get_brands(
     brand_service: BrandServiceDep,
     db: DatabaseDep,
+    current_user: CurrentUser,
     params: ListBrandParams = Depends()
 ) -> ListBrandsResponse:
     """
@@ -141,7 +146,8 @@ async def get_brands(
 async def get_brand_by_id(
     brand_id: uuid.UUID,
     brand_service: BrandServiceDep,
-    db: DatabaseDep
+    db: DatabaseDep,
+    current_user: CurrentUser
 ) -> BrandResponse:
     """
     Get a brand by ID.
@@ -184,7 +190,8 @@ async def update_brand(
     brand_id: uuid.UUID,
     request: UpdateBrandRequest,
     brand_service: BrandServiceDep,
-    db: DatabaseDep
+    db: DatabaseDep,
+    current_user: CurrentUser
 ) -> BrandResponse:
     """
     Update a brand.
@@ -230,7 +237,8 @@ async def update_brand(
 async def delete_brand(
     brand_id: uuid.UUID,
     brand_service: BrandServiceDep,
-    db: DatabaseDep
+    db: DatabaseDep,
+    current_user: CurrentUser
 ) -> None:
     """
     Delete a brand.

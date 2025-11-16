@@ -1,3 +1,35 @@
+# usage tutorial 
+Configuration Summary
+Your .env file now includes: ✅ PostgreSQL - Connects to localhost:5432 (matches docker-compose)
+✅ JWT Settings - 30-minute access tokens, 7-day refresh tokens
+✅ Redis - Connects to localhost:6379 (matches docker-compose)
+Next Steps to Run the Application
+Start Docker services:
+```
+docker-compose up -d
+```
+Generate and update JWT_SECRET_KEY in .env file
+Install Python dependencies:
+```
+pip install -r requirements.txt
+```
+Run database migrations:
+```
+alembic upgrade head
+```
+Start the FastAPI application:
+```
+python app.py 
+```
+Your API will be available at http://localhost:8000 with interactive docs at http://localhost:8000/docs
+
+
+
+
+
+
+
+
 # basic CRUD application using alembic , postgresql (docker), fastapi 
 usage:
 CRUD brand into postgres database 
@@ -38,13 +70,7 @@ python app.py
 alembic init alembic
 
 
-### Open alembic.ini and find this line:
-
-sqlalchemy.url = driver://user:pass@localhost/dbname
-Replace it with your actual DB connection URL, e.g.:
-
-sqlalchemy.url = postgresql+asyncpg://user:password@localhost:5432/mydatabase
-
+### load .env file for alembic/env.py
 
 ### Open alembic/env.py, and make sure your models’ metadata is imported:
 ```

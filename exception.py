@@ -26,6 +26,34 @@ class ValidationException(ServiceException):
 
         super().__init__(message, exception_details, status_code=status.HTTP_400_BAD_REQUEST)
 
+
+class AuthenticationException(ServiceException):
+    """Exception for authentication errors."""
+
+    def __init__(self, message: str = "Authentication failed", details: Optional[Dict[str, Any]] = None):
+        super().__init__(message, details, status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+class InvalidTokenException(AuthenticationException):
+    """Exception for invalid or expired tokens."""
+
+    def __init__(self, message: str = "Invalid or expired token", details: Optional[Dict[str, Any]] = None):
+        super().__init__(message, details)
+
+
+class ExpiredTokenException(AuthenticationException):
+    """Exception for expired tokens."""
+
+    def __init__(self, message: str = "Token has expired", details: Optional[Dict[str, Any]] = None):
+        super().__init__(message, details)
+
+
+class AuthorizationException(ServiceException):
+    """Exception for authorization errors."""
+
+    def __init__(self, message: str = "Insufficient permissions", details: Optional[Dict[str, Any]] = None):
+        super().__init__(message, details, status_code=status.HTTP_403_FORBIDDEN)
+
 from sqlalchemy.exc import IntegrityError
 def to_http_exception(exc: ServiceException) -> HTTPException:
     """

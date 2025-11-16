@@ -19,4 +19,14 @@ class AppSettings(BaseAppSettings):
     pg_url: SecretStr
     max_page_size: int = 1000  # Maximum page size for API responses
 
+    # JWT Authentication Settings
+    jwt_secret_key: SecretStr  # Secret key for JWT token signing
+    jwt_algorithm: str = "HS256"  # Algorithm for JWT token signing
+    access_token_expire_minutes: int = 30  # Access token expiration (30 minutes)
+    refresh_token_expire_days: int = 7  # Refresh token expiration (7 days)
+
+    # Redis Settings
+    redis_url: str = "redis://localhost:6379/0"  # Redis connection URL
+    redis_password: SecretStr | None = None  # Optional Redis password
+
 settings = AppSettings()

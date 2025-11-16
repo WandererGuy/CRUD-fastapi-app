@@ -3,6 +3,7 @@ from typing import AsyncGenerator
 from langchain_community.utilities import SQLDatabase
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+import redis.asyncio as aioredis
 
 from settings import settings as st
 
@@ -78,3 +79,40 @@ async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
     finally:
         if session:
             await session.close()
+
+
+# Redis connection pool
+redis_client: aioredis.Redis | None = None
+
+
+async def init_redis():
+    """Initialize Redis connection pool."""
+    global redis_client
+    redis_client = await aioredis.from_url(
+        st.redis_url,
+        password=st.redis_password.get_secret_value() if st.redis_password else None,
+        encoding="utf-8",
+        decode_responses=True,
+        max_connections=10,
+    )
+    return redis_client
+
+
+async def close_redis():
+    """Close Redis connection pool."""
+    global redis_client
+    if redis_client:
+        await redis_client.aclose()
+        redis_client = None
+
+
+async def get_redis() -> aioredis.Redis:
+    """
+    FastAPI dependency for Redis client.
+
+    Returns the global Redis client instance.
+    Must be initialized via init_redis() on app startup.
+    """
+    if redis_client is None:
+        raise RuntimeError("Redis client not initialized. Call init_redis() on app startup.")
+    return redis_client
